@@ -1,0 +1,85 @@
+#!/usr/bin/python
+# -*- coding: utf-8 -*-
+# file:fileList2dic
+
+#       fileList2dic
+#       
+#       Copyright 2009 Damjan Dimitrioski <damjandimitrioski@gmail.com>
+#       
+#       This program is free software; you can redistribute it and/or modify
+#       it under the terms of the GNU General Public License as published by
+#       the Free Software Foundation; either version 2 of the License, or
+#       (at your option) any later version.
+#       
+#       This program is distributed in the hope that it will be useful,
+#       but WITHOUT ANY WARRANTY; without even the implied warranty of
+#       MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+#       GNU General Public License for more details.
+#       
+#       You should have received a copy of the GNU General Public License
+#       along with this program; if not, write to the Free Software
+#       Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston,
+#       MA 02110-1301, USA.
+
+import pickle
+from sys import version_info as vers
+pair = {} # pair contains the pairs.
+
+def file2list (_file): return open (_file, 'r')
+"""
+def cutter (filename):
+	_file = file2list (filename)
+	temp = _file.readlines ()
+	temp1 = []
+	for line in temp:
+		if not line.strip(): continue 
+		else: temp1.append (line.replace("\n", ""))
+	return (temp1)
+"""
+def makePair(key, value):
+	pair [key] = value
+
+def test (word):
+	if word:
+		try: print (pair [word])
+		except Exception: print ("You f***ing word \"%s\" wasn't found.'" % word)
+
+def cleanWord(word):
+	return word.replace("\n", "")
+
+def convert2Dic ():
+	_file = file2list ("islang_all")
+	listFile = _file.readlines()
+	vkpZbora = len (listFile)
+	for i in listFile:
+		i = cleanWord (i)
+		_pair = i.split("\t")
+		p = _pair[0]
+		p1 = ""
+		try: p1 = _pair[1]
+		except Exception: pass
+		makePair (p.lower(), p1)
+	print ("DB has total of %s" % vkpZbora)
+
+def saveDic ():
+	print (":: Saving to dictionary ::")
+	
+	if vers[0] < 3:
+		saveFile = open("slang.dic", "w")
+		pickle.dump (pair, saveFile)
+		saveFile.close()
+	else:
+		print ("Python3, saving not yet supported")
+		
+def tester ():
+	word = None
+	while word != "":
+		if vers[0] < 3: word = raw_input ("Tell me your f word> ")
+		else: word = input ("Tell me your f word> ")
+		test (word)
+
+def main ():
+	convert2Dic ()
+	tester ()
+	saveDic ()
+main ()
